@@ -1,7 +1,7 @@
 {
-  "name": "@hfyidu/uni-helper-builder",
-  "version": ".0.0",
-  "description": "",
+  "name": "@shivip/uni-helper-builder",
+  "version": "2.0.0",
+  "description": "交互式命令行代码生成器，面向公司基于 uni-app（快应用/小程序）的前端项目。它按照团队约定的 DDD（领域驱动设计）分层架构，通过命令行问答的方式自动生成领域模板、用例、数据模型（DTO）等样板代码，并支持多应用主体切换开发。",
   "main": "index.js",
   "typings": "types/index.d.ts",
   "scripts": {
@@ -26,7 +26,7 @@
     "@types/babel__generator": "^7.6.7",
     "@types/babel__template": "^7.4.4",
     "@types/babel__traverse": "^7.20.4",
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.19.43",
     "fs-extra": "^11.2.0",
     "path-browserify": "^1.0.1",
     "prettier": "^3.1.1",

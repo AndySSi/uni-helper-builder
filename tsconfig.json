@@ -4,6 +4,10 @@
       "ESNext",
       "DOM"
     ],
+    "ignoreDeprecations": "5.0",
+    "types": [
+      "node"
+    ],
     "target": "es5",
     "module": "CommonJS",
     "moduleResolution": "node",
