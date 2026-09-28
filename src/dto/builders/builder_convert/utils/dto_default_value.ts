@@ -84,7 +84,10 @@ const typeSourceMappers = <Record<ts.SyntaxKind, (value: ts.Expression, type: ts
     return undefined;
   },
   [ts.SyntaxKind.UnionType]: (value, type) => undefined,
-  [ts.SyntaxKind.ArrayType]: (value, type) => ((<ts.ArrayTypeNode>type).elementType as ts.TypeReferenceNode).typeName.getText(),
+  [ts.SyntaxKind.ArrayType]: (value, type) => {
+    const element = (type as ts.ArrayTypeNode).elementType;
+    return ts.isTypeReferenceNode(element) ? element.typeName.getText() : undefined;
+  },
   [ts.SyntaxKind.TypeReference]: (value, type: ts.TypeReferenceNode) => {
     if (!type.typeArguments) return type.typeName.getText();
 

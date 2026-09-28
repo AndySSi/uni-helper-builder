@@ -29,6 +29,7 @@ export interface ConfigOption {
     httpRequestMethod: Pick<BaseHookConfiguration, 'hookName'>;
     validArray: Pick<BaseHookConfiguration, 'hookName'>;
     validObject: Pick<BaseHookConfiguration, 'hookName'>;
+    decodeJsonField?: Pick<BaseHookConfiguration, 'hookName'>;
   };
   domain: DomainConfiguration;
   useCase: UseCaseConfiguration;
@@ -60,7 +61,8 @@ export type UseCaseBasicConfiguration = Omit<BaseHookConfiguration<{ readonly on
 
 export type UseCaseModuleConfiguration = UseCaseBasicConfiguration;
 
-export type UseCasePaginatorConfiguration = UseCaseBasicConfiguration & AnnotationConfiguration<{ readonly pagedResultDto: string; readonly pagedQueryParams: string }>;
+export type UseCasePaginatorConfiguration = UseCaseBasicConfiguration &
+  AnnotationConfiguration<{ readonly pagedResultDto: string; readonly pagedQueryParams: string }>;
 
 export interface UseCaseConfiguration extends BaseConfiguration {
   readonly fileSuffix: string;
@@ -92,6 +94,7 @@ export interface DtoDecoratorsConfiguration {
   readonly list: string;
   readonly whenList: string;
   readonly whenMap: string;
+  readonly jsonEncoded?: string;
 }
 
 export interface DtoConfiguration extends BaseHookConfiguration<DtoFormatterConfiguration> {
@@ -106,7 +109,8 @@ export interface EntitiesConfiguration extends BaseConfiguration {
 
 export interface RequestParamsConfiguration extends BaseConfiguration {}
 
-export interface HttpApiConfiguration extends Omit<BaseConfiguration, 'dirname'>, Omit<BaseHookConfiguration<{ readonly request: string }>, 'namespace'> {
+export interface HttpApiConfiguration
+  extends Omit<BaseConfiguration, 'dirname'>, Omit<BaseHookConfiguration<{ readonly request: string }>, 'namespace'> {
   readonly params: string;
   readonly response: string;
   properties: {
@@ -122,7 +126,8 @@ export interface RepositoryPathBuilderConfiguration {
   pathBuilder: Omit<BaseHookConfiguration<{ readonly resolve: string }>, 'namespace'>;
 }
 
-export interface RepositoryConfiguration extends Omit<BaseConfiguration, 'dirname'>, BaseHookConfiguration<RepositoryPathBuilderConfiguration> {
+export interface RepositoryConfiguration
+  extends Omit<BaseConfiguration, 'dirname'>, BaseHookConfiguration<RepositoryPathBuilderConfiguration> {
   restful: RepositoryRestfulApiConfiguration;
   httpApi: HttpApiConfiguration;
   enableSingleton: boolean | [source: string, named: string];

@@ -1,12 +1,14 @@
 import ts from 'typescript';
+import { getJsonEncodedList } from './json_encoded_list';
 
 import { ORIGINAL_KEYS } from 'src/_constants';
 
 import { DecoratorKeys, DtoFieldProp } from '../../../models';
 
 // eslint-disable-next-line complexity
-export function getValueExpression(prop: DtoFieldProp): IStructure<ts.Expression> {
+export function getValueExpression(prop: DtoFieldProp, dtoName: string): IStructure<ts.Expression> {
   const { option, field } = prop;
+  if (option[DecoratorKeys.jsonEncoded]) return getJsonEncodedList(prop, dtoName);
 
   if (option[DecoratorKeys.required]) {
     return getNormal(getJsonKey(prop));

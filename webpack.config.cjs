@@ -2,6 +2,8 @@ const path = require('path');
 
 module.exports = {
   target: 'node',
+  // Prettier uses dynamic Node imports; load it directly at runtime.
+  externals: { prettier: 'commonjs prettier', jiti: 'commonjs jiti' },
   mode: 'development',
   entry: './src/index.ts',
   output: {

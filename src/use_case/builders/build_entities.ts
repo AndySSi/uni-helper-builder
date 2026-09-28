@@ -244,11 +244,11 @@ function getDtoImports() {
     for (const key in field) {
       const item = field[key as keyof typeof field];
       const imported = backImportClause.find((res) => res.key === key);
-      if (!imported && validKeys.includes(key)) {
+      if (!imported && validKeys.includes(key) && Context.config.entities.dto.decorators[key as keyof typeof Context.config.entities.dto.decorators]) {
         const _key = key as keyof typeof Context.config.entities.dto.decorators;
         backImportClause.push({
           key,
-          node: Object.identifier({ text: Context.config.entities.dto.decorators[_key] }).importSpecifier({}),
+          node: Object.identifier({ text: Context.config.entities.dto.decorators[_key]! }).importSpecifier({}),
         });
       }
 

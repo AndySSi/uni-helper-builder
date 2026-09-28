@@ -5,6 +5,7 @@ const propertyDecoratorKeys = [
   "OriginalKey",
   "WhenList",
   "WhenMap",
+  "JsonEncoded",
 ];
 
 /**

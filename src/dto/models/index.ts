@@ -6,6 +6,7 @@ export enum DecoratorKeys {
   originalKey = 'OriginalKey',
   whenList = 'WhenList',
   whenMap = 'WhenMap',
+  jsonEncoded = 'JsonEncoded',
 }
 
 export enum CommandDtoType {
@@ -42,7 +43,13 @@ export interface DtoFieldProp {
 export type MappedOption = {
   [DecoratorKeys.required]?: boolean;
   [DecoratorKeys.originalKey]?: string;
-  [DecoratorKeys.default]?: { vKind: ts.SyntaxKind; tKind: ts.SyntaxKind; value: string; source?: string /* | string[] */ };
+  [DecoratorKeys.default]?: {
+    vKind: ts.SyntaxKind;
+    tKind: ts.SyntaxKind;
+    value: string;
+    source?: string;
+  };
   [DecoratorKeys.whenList]?: string;
   [DecoratorKeys.whenMap]?: string;
+  [DecoratorKeys.jsonEncoded]?: boolean;
 };

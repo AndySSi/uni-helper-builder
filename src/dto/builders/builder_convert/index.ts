@@ -68,7 +68,7 @@ async function buildConverts(dto: DtoFileInfo) {
   const assignments: IStructure<ts.Statement>[] = [];
 
   dtoFields.forEach((prop) => {
-    assignments.push(assignmentAst(prop));
+    assignments.push(assignmentAst(prop, dto.dtoName));
   });
 
   const exports = [exportFromJsonAst(funcName, dto)];

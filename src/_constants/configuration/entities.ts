@@ -26,6 +26,7 @@ export const entitiesConfiguration: EntitiesConfiguration = {
       list: 'List',
       whenList: 'WhenList',
       whenMap: 'WhenMap',
+      jsonEncoded: 'JsonEncoded',
     },
   },
 };

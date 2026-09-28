@@ -31,6 +31,12 @@ export function getImports(dto: DtoFileInfo, imports: IStructure<ts.ImportDeclar
     importDependencies.push(Object.identifier({ text: Context.config.dependencies.validObject.hookName }).importSpecifier({}));
   }
 
+  if (dtoFields.some(prop => prop.option[DecoratorKeys.jsonEncoded])) {
+    importDependencies.push(Object.identifier({
+      text: Context.config.dependencies.decodeJsonField?.hookName ?? 'decodeJsonField',
+    }).importSpecifier({}));
+  }
+
   if (importDependencies.length) {
     imports.push(
       Object.stringLiteral({ text: Context.config.dependencyName }).importDeclaration({

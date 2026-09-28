@@ -24,6 +24,9 @@ export const defaultConfiguration: ConfigOption = {
     validObject: {
       hookName: 'validObject',
     },
+    decodeJsonField: {
+      hookName: 'decodeJsonField',
+    },
   },
   domain: domainConfiguration,
   useCase: useCaseConfiguration,
