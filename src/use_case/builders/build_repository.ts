@@ -9,6 +9,7 @@ import { DEPENDENCIES_INFO, I_FILE_SPACED, I_FILE_SPACED_AST } from 'src/_consta
 import { HttpMethods, ResultType, UseCaseType } from '../models';
 import { UseCaseContext } from '../context';
 import { requestParamsAst } from '../ast_template';
+import { mergeDependencyImports } from './merge_dependency_imports';
 
 export const buildRepository = () =>
   withBuilder(async () => {
@@ -34,7 +35,9 @@ export const buildRepository = () =>
         }
 
         if (validRepositoryBody(path)) {
-          const methods = path.node.body.find((item) => bt.isClassMethod(item) && bt.isIdentifier(item.key) && item.key.name === UseCaseContext.caseName);
+          const methods = path.node.body.find(
+            (item) => bt.isClassMethod(item) && bt.isIdentifier(item.key) && item.key.name === UseCaseContext.caseName,
+          );
           if (!methods) {
             path.node.body.push(babelAst.body.body[0] as bt.ClassMethod);
           }
@@ -81,7 +84,9 @@ class BuildByMethodType {
 
     const _requestParamsAst = [
       ...requestParamsAst(),
-      Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({ name: Context.config.repository.httpApi.properties.body }),
+      Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({
+        name: Context.config.repository.httpApi.properties.body,
+      }),
       ...(UseCaseContext.resultType === ResultType.dto
         ? [
             Object.identifier({ text: entities.entityName })
@@ -102,7 +107,11 @@ class BuildByMethodType {
       .awaitExpression();
 
     if (UseCaseContext.resultType !== ResultType.void) {
-      bodyAst.push([requestBodyAst.variableDeclaration({ name: Context.config.repository.httpApi.response })].variableDeclarationList({ flags: ts.NodeFlags.Const }).variableStatement({}));
+      bodyAst.push(
+        [requestBodyAst.variableDeclaration({ name: Context.config.repository.httpApi.response })]
+          .variableDeclarationList({ flags: ts.NodeFlags.Const })
+          .variableStatement({}),
+      );
       bodyAst.push(Object.identifier({ text: Context.config.repository.httpApi.response }).returnStatement());
     } else {
       bodyAst.push(requestBodyAst);
@@ -114,7 +123,9 @@ class BuildByMethodType {
           modifiers: [Object.modifier.asyncKeyword],
           name: Object.identifier({ text: UseCaseContext.sourceName }),
           parameters: [
-            Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({ type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}) }),
+            Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({
+              type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}),
+            }),
           ],
         }),
       ].classDeclaration({
@@ -131,7 +142,9 @@ class BuildByMethodType {
 
     const _requestParamsAst = [
       ...requestParamsAst(),
-      Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({ name: Context.config.repository.httpApi.properties.body }),
+      Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({
+        name: Context.config.repository.httpApi.properties.body,
+      }),
     ];
 
     if (UseCaseContext.resultType === ResultType.dto) {
@@ -153,7 +166,11 @@ class BuildByMethodType {
       .awaitExpression();
 
     if (UseCaseContext.resultType !== ResultType.void) {
-      bodyAst.push([requestBodyAst.variableDeclaration({ name: Context.config.repository.httpApi.response })].variableDeclarationList({ flags: ts.NodeFlags.Const }).variableStatement({}));
+      bodyAst.push(
+        [requestBodyAst.variableDeclaration({ name: Context.config.repository.httpApi.response })]
+          .variableDeclarationList({ flags: ts.NodeFlags.Const })
+          .variableStatement({}),
+      );
       bodyAst.push(Object.identifier({ text: Context.config.repository.httpApi.response }).returnStatement());
     } else {
       bodyAst.push(requestBodyAst);
@@ -165,7 +182,9 @@ class BuildByMethodType {
           modifiers: [Object.modifier.asyncKeyword],
           name: Object.identifier({ text: UseCaseContext.sourceName }),
           parameters: [
-            Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({ type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}) }),
+            Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({
+              type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}),
+            }),
           ],
         }),
       ].classDeclaration({
@@ -188,7 +207,9 @@ class BuildByMethodType {
               argumentsArray: [
                 [
                   ...requestParamsAst(),
-                  Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({ name: Context.config.repository.httpApi.properties.body }),
+                  Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({
+                    name: Context.config.repository.httpApi.properties.body,
+                  }),
                 ].objectLiteralExpression({}),
               ],
             })
@@ -199,7 +220,9 @@ class BuildByMethodType {
             modifiers: [Object.modifier.asyncKeyword],
             name: Object.identifier({ text: UseCaseContext.sourceName }),
             parameters: [
-              Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({ type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}) }),
+              Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({
+                type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}),
+              }),
             ],
           }),
       ].classDeclaration({
@@ -227,7 +250,9 @@ class BuildByGetCaseType {
                   [
                     ...requestParamsAst(),
 
-                    Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({ name: Context.config.repository.httpApi.properties.query }),
+                    Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({
+                      name: Context.config.repository.httpApi.properties.query,
+                    }),
 
                     Object.identifier({ text: entities.entityName })
                       .propertyAccessExpression({ name: Context.config.entities.dto.override.fromJson })
@@ -248,7 +273,9 @@ class BuildByGetCaseType {
             modifiers: [Object.modifier.asyncKeyword],
             name: Object.identifier({ text: UseCaseContext.sourceName }),
             parameters: [
-              Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({ type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}) }),
+              Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({
+                type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}),
+              }),
             ],
           }),
       ].classDeclaration({
@@ -274,7 +301,9 @@ class BuildByGetCaseType {
                   [
                     ...requestParamsAst(),
 
-                    Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({ name: Context.config.repository.httpApi.properties.query }),
+                    Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({
+                      name: Context.config.repository.httpApi.properties.query,
+                    }),
 
                     Object.identifier({ text: entities.entityName })
                       .propertyAccessExpression({ name: Context.config.entities.dto.override.fromJson })
@@ -295,7 +324,9 @@ class BuildByGetCaseType {
             modifiers: [Object.modifier.asyncKeyword],
             name: Object.identifier({ text: UseCaseContext.sourceName }),
             parameters: [
-              Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({ type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}) }),
+              Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({
+                type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}),
+              }),
             ],
           }),
       ].classDeclaration({
@@ -321,7 +352,9 @@ class BuildByGetCaseType {
                   [
                     ...requestParamsAst(),
 
-                    Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({ name: Context.config.repository.httpApi.properties.query }),
+                    Object.identifier({ text: Context.config.repository.httpApi.params }).propertyAssignment({
+                      name: Context.config.repository.httpApi.properties.query,
+                    }),
 
                     Object.identifier({ text: entities.entityName })
                       .propertyAccessExpression({ name: Context.config.entities.dto.override.toList })
@@ -335,10 +368,16 @@ class BuildByGetCaseType {
             .variableDeclarationList({ flags: ts.NodeFlags.Const })
             .variableStatement({}),
 
-          [Object.identifier({ text: Context.config.repository.httpApi.response }).propertyAssignment({ name: DEPENDENCIES_INFO.project.list })]
+          [
+            Object.identifier({ text: Context.config.repository.httpApi.response }).propertyAssignment({
+              name: DEPENDENCIES_INFO.project.list,
+            }),
+          ]
             .objectLiteralExpression({})
             .asExpression({
-              type: Object.identifier({ text: Context.config.useCase.models.paginator.annotation.pagedResultDto }).typeReferenceNode({
+              type: Object.identifier({
+                text: Context.config.useCase.models.paginator.annotation.pagedResultDto,
+              }).typeReferenceNode({
                 typeArguments: [Object.identifier({ text: entities.entityName }).typeReferenceNode({})],
               }),
             })
@@ -349,7 +388,9 @@ class BuildByGetCaseType {
             modifiers: [Object.modifier.asyncKeyword],
             name: Object.identifier({ text: UseCaseContext.sourceName }),
             parameters: [
-              Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({ type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}) }),
+              Object.identifier({ text: Context.config.repository.httpApi.params }).parameterDeclaration({
+                type: Object.identifier({ text: requestParams.annotationName }).typeReferenceNode({}),
+              }),
             ],
           }),
       ].classDeclaration({
@@ -370,9 +411,6 @@ function padImport(ast: ParseResult<bt.File>) {
 }
 
 function padDependencies(ast: ParseResult<bt.File>) {
-  const repositoryAstBody = ast.program.body;
-  const importDependencies = repositoryAstBody.find((item) => bt.isImportDeclaration(item) && item.source.value === Context.config.dependencyName) as bt.ImportDeclaration;
-
   const dependencies = [Context.config.repository.hookName, Context.config.dependencies.httpRequestMethod.hookName];
 
   if (Array.isArray(Context.config.repository.enableSingleton)) {
@@ -381,25 +419,11 @@ function padDependencies(ast: ParseResult<bt.File>) {
     }
   }
 
-  if (UseCaseContext.caseType === UseCaseType.paginator) {
-    dependencies.push(Context.config.useCase.models.paginator.annotation.pagedResultDto);
-  }
-
-  if (importDependencies) {
-    dependencies.forEach((depend) => {
-      const index = importDependencies.specifiers.findIndex((res) => bt.isImportSpecifier(res) && res.local.name === depend);
-      if (index === -1) {
-        importDependencies.specifiers.push(bt.importSpecifier(bt.identifier(depend), bt.identifier(depend)));
-      }
-    });
-  } else {
-    repositoryAstBody.unshift(
-      bt.importDeclaration(
-        dependencies.map((item) => bt.importSpecifier(bt.identifier(item), bt.identifier(item))),
-        bt.stringLiteral(Context.config.dependencyName),
-      ),
-    );
-  }
+  const types =
+    UseCaseContext.caseType === UseCaseType.paginator
+      ? [Context.config.useCase.models.paginator.annotation.pagedResultDto]
+      : [];
+  mergeDependencyImports(ast, Context.config.dependencyName, dependencies, types);
 }
 
 function padRequestParams(ast: ParseResult<bt.File>) {
@@ -408,12 +432,20 @@ function padRequestParams(ast: ParseResult<bt.File>) {
   if (requestParams.annotationName) {
     const repositoryAstBody = ast.program.body;
     const source = Context.config.requestParams.dirname.padPrefix('./');
-    const importItem = bt.importSpecifier(bt.identifier(requestParams.annotationName), bt.identifier(requestParams.annotationName));
+    const importItem = bt.importSpecifier(
+      bt.identifier(requestParams.annotationName),
+      bt.identifier(requestParams.annotationName),
+    );
 
-    const requestImport = repositoryAstBody.find((item) => bt.isImportDeclaration(item) && item.source.value === source) as bt.ImportDeclaration;
+    const requestImport = repositoryAstBody.find(
+      (item) => bt.isImportDeclaration(item) && item.source.value === source,
+    ) as bt.ImportDeclaration;
 
     if (requestImport) {
-      const imported = requestImport.specifiers.findIndex((res) => bt.isImportSpecifier(res) && res.local.name === requestParams.annotationName) !== -1;
+      const imported =
+        requestImport.specifiers.findIndex(
+          (res) => bt.isImportSpecifier(res) && res.local.name === requestParams.annotationName,
+        ) !== -1;
       if (!imported) {
         requestImport.specifiers.push(importItem);
       }
@@ -437,10 +469,15 @@ function padEntities(ast: ParseResult<bt.File>) {
     const source = Context.config.entities.dirname.padPrefix('./');
     const importItem = bt.importSpecifier(bt.identifier(entities.entityName), bt.identifier(entities.entityName));
 
-    const entitiesImport = repositoryAstBody.find((item) => bt.isImportDeclaration(item) && item.source.value === source) as bt.ImportDeclaration;
+    const entitiesImport = repositoryAstBody.find(
+      (item) => bt.isImportDeclaration(item) && item.source.value === source,
+    ) as bt.ImportDeclaration;
 
     if (entitiesImport) {
-      const imported = entitiesImport.specifiers.findIndex((res) => bt.isImportSpecifier(res) && res.local.name === entities.entityName) !== -1;
+      const imported =
+        entitiesImport.specifiers.findIndex(
+          (res) => bt.isImportSpecifier(res) && res.local.name === entities.entityName,
+        ) !== -1;
       if (!imported) {
         entitiesImport.specifiers.push(importItem);
       }
