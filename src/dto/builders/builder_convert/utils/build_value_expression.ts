@@ -1,5 +1,6 @@
 import ts from 'typescript';
 import { getJsonEncodedList } from './json_encoded_list';
+import { createEmptyDefaultExpression } from './default_options';
 
 import { ORIGINAL_KEYS } from 'src/_constants';
 
@@ -8,6 +9,15 @@ import { DecoratorKeys, DtoFieldProp } from '../../../models';
 // eslint-disable-next-line complexity
 export function getValueExpression(prop: DtoFieldProp, dtoName: string): IStructure<ts.Expression> {
   const { option, field } = prop;
+  if (option[DecoratorKeys.default]?.useDefaultWhenEmpty) {
+    const result = getNormal(getJsonKey(prop));
+    const structure = result as IStructure<ts.Expression> & { node: ts.Expression };
+    structure.node = createEmptyDefaultExpression(
+      structure.node,
+      (Object.identifier({ text: option[DecoratorKeys.default]!.value }) as IStructure<ts.Expression> & { node: ts.Expression }).node,
+    );
+    return result;
+  }
   if (option[DecoratorKeys.jsonEncoded]) return getJsonEncodedList(prop, dtoName);
 
   if (option[DecoratorKeys.required]) {

@@ -48,6 +48,7 @@ export type MappedOption = {
     tKind: ts.SyntaxKind;
     value: string;
     source?: string;
+    useDefaultWhenEmpty?: boolean;
   };
   [DecoratorKeys.whenList]?: string;
   [DecoratorKeys.whenMap]?: string;

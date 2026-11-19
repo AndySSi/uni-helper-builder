@@ -4,6 +4,7 @@ import { DtoFieldProp, DtoFileInfo, DecoratorKeys } from '../../../../dto/models
 import { CustomImportOption } from '../models';
 import { padPath } from './pad_path';
 import { getDtoValidDefaultValue } from './dto_default_value';
+import { isDefaultEmptyStringType, parseDefaultOptions } from './default_options';
 
 export function getBuildInfo(
   dto: DtoFileInfo,
@@ -137,8 +138,23 @@ function getDtoEntityField(node: ts.ClassDeclaration, dtoInfo: DtoFileInfo) {
         throw new Error(`不支持的 DTO 字段装饰器：${dtoInfo.dtoName}.${prop.field} @${rawName}`);
       }
       handler(prop, decoratorValue, decoratorType, dtoInfo);
+      if (decoratorKey === DecoratorKeys.default) {
+        if (res.expression.arguments.length > 2) {
+          throw new Error(`${dtoInfo.dtoName}.${prop.field}: @Default accepts at most two arguments`);
+        }
+        prop.option[DecoratorKeys.default]!.useDefaultWhenEmpty = parseDefaultOptions(
+          res.expression.arguments[1], `${dtoInfo.dtoName}.${prop.field}`,
+        );
+      }
       /** 新代码结束 */
     });
+    if (prop.option[DecoratorKeys.default]?.useDefaultWhenEmpty) {
+      if (!isDefaultEmptyStringType(item.type) || prop.option[DecoratorKeys.required]
+        || prop.option[DecoratorKeys.whenList] || prop.option[DecoratorKeys.whenMap]
+        || prop.option[DecoratorKeys.jsonEncoded]) {
+        throw new Error(`${dtoInfo.dtoName}.${prop.field}: useDefaultWhenEmpty requires a string field without Required/WhenList/WhenMap/JsonEncoded`);
+      }
+    }
     if (prop.option[DecoratorKeys.jsonEncoded]) {
       const type = item.type;
       const element = type && ts.isArrayTypeNode(type) ? type.elementType
